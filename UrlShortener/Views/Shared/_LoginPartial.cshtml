@@ -1,0 +1,38 @@
+﻿@using System.Security.Claims
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    var user = Context.User;
+    var isAuthenticated = user?.Identity?.IsAuthenticated ?? false;
+    var name = user?.FindFirst(ClaimTypes.Name)?.Value;
+    var avatar = user?.FindFirst("avatar_url")?.Value;
+}
+
+@if (!isAuthenticated)
+{
+    <li class="nav-item">
+        <a class="nav-link" asp-controller="Auth" asp-action="Login">Sign in</a>
+    </li>
+}
+else
+{
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            @if (!string.IsNullOrEmpty(avatar))
+            {
+                <img src="@avatar" alt="avatar" class="rounded-circle me-2" style="width:28px;height:28px;object-fit:cover" />
+            }
+            <span>@(string.IsNullOrEmpty(name) ? "Profile" : name)</span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" asp-controller="Dashboard" asp-action="Index">Dashboard</a></li>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+                <form asp-controller="Auth" asp-action="Logout" method="post" class="px-3">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-link dropdown-item">Sign out</button>
+                </form>
+            </li>
+        </ul>
+    </li>
+}

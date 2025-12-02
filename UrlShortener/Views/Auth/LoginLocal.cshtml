@@ -1,0 +1,21 @@
+﻿@model UrlShortener.Models.ViewModels.LoginViewModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<h3>Sign In</h3>
+<form asp-action="LoginLocal" method="post">
+    <input type="hidden" asp-for="ReturnUrl" />
+
+    <div class="mb-3">
+        <label>Username or Email</label>
+        <input asp-for="UserNameOrEmail" class="form-control" />
+        <span asp-validation-for="UserNameOrEmail" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label>Password</label>
+        <input asp-for="Password" type="password" class="form-control" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+
+    <button class="btn btn-primary w-100">Login</button>
+</form>

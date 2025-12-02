@@ -1,0 +1,77 @@
+﻿@model UrlShortener.Models.ViewModels.UrlDetailsViewModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "Analytics - " + Model.ShortCode;
+}
+
+<h3>Analytics for @Model.ShortCode</h3>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Summary</h5>
+                <p><strong>Original</strong>: <a href="@Model.OriginalUrl" target="_blank">@Model.OriginalUrl</a></p>
+                <p><strong>Short URL</strong>: <a href="@Model.ShortUrl" target="_blank">@Model.ShortUrl</a></p>
+                <p><strong>Total clicks</strong>: @Model.ClickCount</p>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5>Daily clicks (last 7 days)</h5>
+                @if (Model.DailyClicks != null && Model.DailyClicks.Any())
+                {
+                    <table class="table table-sm">
+                        <thead>
+                            <tr><th>Date</th><th>Clicks</th></tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var kv in Model.DailyClicks.OrderBy(k => k.Key))
+                            {
+                                <tr>
+                                    <td>@kv.Key.ToLocalTime().ToString("yyyy-MM-dd")</td>
+                                    <td>@kv.Value</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p class="text-muted">No recent click data.</p>
+                }
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h5>Top referrers</h5>
+                @if (Model.TopReferrers != null && Model.TopReferrers.Any())
+                {
+                    <ul class="list-unstyled">
+                        @foreach (var r in Model.TopReferrers)
+                        {
+                            <li>@r.Referrer <span class="text-muted">(@r.Count)</span></li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p class="text-muted">No referrer data available.</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h6>Quick links</h6>
+                <a class="btn btn-sm btn-outline-primary mb-1" href="@Model.ShortUrl" target="_blank">Open short link</a>
+                <a class="btn btn-sm btn-outline-secondary mb-1" href="@Model.OriginalUrl" target="_blank">Open original</a>
+            </div>
+        </div>
+    </div>
+</div>

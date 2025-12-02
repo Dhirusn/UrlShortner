@@ -1,0 +1,69 @@
+﻿@model UrlShortener.Models.ViewModels.DashboardViewModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<h3>Your URLs</h3>
+
+<div class="mb-3">
+    <a class="btn btn-primary" asp-controller="Url" asp-action="Create">Create new</a>
+</div>
+
+@if (Model.Urls == null || !Model.Urls.Any())
+{
+    <div class="alert alert-info">You have not created any URLs yet.</div>
+}
+else
+{
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Short</th>
+                <th>Original URL</th>
+                <th>Clicks</th>
+                <th>Created</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var u in Model.Urls)
+            {
+                <tr>
+                    <td>
+                        <a asp-controller="Url" asp-action="Details" asp-route-shortCode="@u.ShortCode">@u.ShortCode</a>
+                    </td>
+                    <td style="max-width: 350px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                        <a href="@u.OriginalUrl" target="_blank">@u.OriginalUrl</a>
+                    </td>
+                    <td>@u.ClickCount</td>
+                    <td>@u.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd")</td>
+                    <td class="text-end">
+                        <a class="btn btn-sm btn-outline-secondary me-1" asp-controller="Dashboard" asp-action="Analytics" asp-route-shortCode="@u.ShortCode">Analytics</a>
+
+                        <form asp-controller="Dashboard" asp-action="Delete" asp-route-shortCode="@u.ShortCode" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this short URL?');">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <nav>
+        <ul class="pagination">
+            @{
+                var totalPages = Model.TotalPages;
+                var current = Model.Page;
+                for (int p = 1; p <= totalPages; p++)
+                {
+                    <li class="page-item @(p == current ? "active" : "")">
+                        <a class="page-link" asp-controller="Dashboard" asp-action="Index" asp-route-page="@p">@p</a>
+                    </li>
+                }
+            }
+        </ul>
+    </nav>
+}

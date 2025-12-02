@@ -1,0 +1,50 @@
+﻿@model UrlShortener.Models.ViewModels.CreateUrlViewModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "Create Short URL";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h4 class="card-title mb-3">Create a short link</h4>
+
+                <form asp-controller="Url" asp-action="Create" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="mb-3">
+                        <label asp-for="OriginalUrl" class="form-label"></label>
+                        <input asp-for="OriginalUrl" class="form-control" placeholder="https://example.com/path" />
+                        <span asp-validation-for="OriginalUrl" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="CustomAlias" class="form-label"></label>
+                        <input asp-for="CustomAlias" class="form-control" placeholder="Optional custom alias (letters, numbers, -, _)" />
+                        <span asp-validation-for="CustomAlias" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ExpiresAt" class="form-label"></label>
+                        <input asp-for="ExpiresAt" type="datetime-local" class="form-control" />
+                        <span asp-validation-for="ExpiresAt" class="text-danger"></span>
+                        <div class="form-text">Optional: choose an expiration date and time (UTC).</div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">Create</button>
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+}

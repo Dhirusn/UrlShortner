@@ -1,0 +1,93 @@
+﻿@model UrlShortener.Models.ViewModels.UrlDetailsViewModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "URL Details";
+    var baseUrl = Model.ShortUrl; // already provided by service; fallback handled there
+}
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card shadow-sm mb-3">
+            <div class="card-body">
+                <h4 class="card-title">@Model.ShortCode</h4>
+                <p class="mb-1"><strong>Original</strong>: <a href="@Model.OriginalUrl" target="_blank">@Model.OriginalUrl</a></p>
+                <p class="mb-1"><strong>Short URL</strong>: <a href="@Model.ShortUrl" target="_blank">@Model.ShortUrl</a></p>
+                <p class="mb-1"><strong>Created</strong>: @Model.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")</p>
+                @if (Model.ExpiresAt.HasValue)
+                {
+                    <p class="mb-1"><strong>Expires</strong>: @Model.ExpiresAt.Value.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")</p>
+                }
+                <p class="mb-1"><strong>Clicks</strong>: @Model.ClickCount</p>
+                @if (Model.LastAccessedAt.HasValue)
+                {
+                    <p class="mb-1"><strong>Last accessed</strong>: @Model.LastAccessedAt.Value.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")</p>
+                }
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5>Daily clicks (last 7 days)</h5>
+                @if (Model.DailyClicks != null && Model.DailyClicks.Count > 0)
+                {
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Clicks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var kv in Model.DailyClicks.OrderBy(k => k.Key))
+                            {
+                                <tr>
+                                    <td>@kv.Key.ToLocalTime().ToString("yyyy-MM-dd")</td>
+                                    <td>@kv.Value</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p class="text-muted">No clicks recorded in the last 7 days.</p>
+                }
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm mb-3">
+            <div class="card-body">
+                <h6>Quick actions</h6>
+                <div class="d-grid gap-2">
+                    <a class="btn btn-outline-primary" href="@Model.ShortUrl" target="_blank">Open short link</a>
+                    <a class="btn btn-outline-secondary" href="@Model.OriginalUrl" target="_blank">Open original</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h6>Top referrers</h6>
+                @if (Model.TopReferrers?.Any() ?? false)
+                {
+                    <ul class="list-unstyled">
+                        @foreach (var r in Model.TopReferrers)
+                        {
+                            <li>
+                                <strong>@r.Referrer</strong> <span class="text-muted">(@r.Count)</span>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p class="text-muted">No referrer data available.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>

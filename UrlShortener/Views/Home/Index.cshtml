@@ -1,0 +1,43 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<div class="row">
+    <div class="col-md-8">
+        <h1>Welcome to @(ViewData["AppName"] ?? "UrlShortener")</h1>
+        <p class="lead">Create short, shareable links with analytics and user management. Simple, fast, and scalable.</p>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Quick create</h5>
+                <form asp-controller="Url" asp-action="Create" method="get" class="row g-2 align-items-center">
+                    <div class="col-auto">
+                        <a class="btn btn-primary" asp-controller="Url" asp-action="Create">Create a short link</a>
+                    </div>
+                    <div class="col-auto">
+                        <a class="btn btn-outline-secondary" asp-controller="Dashboard" asp-action="Index">Go to dashboard</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <h4>How it works</h4>
+        <ol>
+            <li>Paste a long URL into the create form.</li>
+            <li>Optionally provide a custom alias and expiration.</li>
+            <li>Share the shortened link — you'll get simple analytics in the dashboard.</li>
+        </ol>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Status</h5>
+                <p class="card-text">Service healthy: <strong>OK</strong></p>
+                <a class="btn btn-sm btn-outline-primary" asp-controller="Home" asp-action="Version">Version</a>
+                <a class="btn btn-sm btn-outline-secondary" asp-controller="Home" asp-action="Health">Health</a>
+            </div>
+        </div>
+    </div>
+</div>

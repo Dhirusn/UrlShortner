@@ -1,0 +1,66 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
+@inject IConfiguration Configuration
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - @(Configuration["AppName"] ?? "UrlShortener")</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" integrity="" crossorigin="anonymous" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                @(Configuration["AppName"] ?? "UrlShortener")
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Url" asp-action="Create">Create</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                    </li>
+                </ul>
+
+                <ul class="navbar-nav ms-auto">
+                    <partial name="_LoginPartial" />
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        @if (TempData["StatusMessage"] != null)
+        {
+            <div class="alert alert-info">@TempData["StatusMessage"]</div>
+        }
+
+        @RenderBody()
+    </div>
+
+    <footer class="footer mt-auto py-4 bg-light">
+        <div class="container text-center">
+            <small>© @(DateTime.UtcNow.Year) @(Configuration["AppName"] ?? "UrlShortener")</small>
+            &nbsp;•&nbsp;
+            <a asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="" crossorigin="anonymous"></script>
+    <script src="~/js/site.js"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

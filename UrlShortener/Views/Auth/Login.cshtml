@@ -1,0 +1,44 @@
+﻿@model UrlShortener.Models.ViewModels.LoginViewModel;
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "Sign in";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h3 class="card-title mb-3">Sign in</h3>
+
+                <p class="text-muted">Choose a provider to sign in. For development, use Google or Microsoft if configured.</p>
+
+                <div class="d-grid gap-2 mb-2">
+                    <a class="btn btn-outline-success" asp-controller="Auth" asp-action="LoginLocal">
+                        Sign in with Username/Password
+                    </a>
+
+                    <a class="btn btn-outline-primary" asp-controller="Auth" asp-action="ExternalLogin" asp-route-provider="Google" asp-route-returnUrl="@Model?.ReturnUrl ?? Url.Content(" ~ /")">
+                        Sign in with Google
+                    </a>
+                    <a class="btn btn-outline-dark" asp-controller="Auth" asp-action="ExternalLogin" asp-route-provider="Microsoft" asp-route-returnUrl="@Model?.ReturnUrl ?? Url.Content(" ~ /")">
+                        Sign in with Microsoft
+                    </a>
+                    <!-- GitHub temporarily hidden if not configured -->
+                    <a class="btn btn-outline-secondary" asp-controller="Auth" asp-action="Register">
+                        Create Account
+                    </a>
+                    @* <a class="btn btn-outline-secondary disabled" title="GitHub not configured">Sign in with GitHub (disabled)</a> *@
+                </div>
+
+                <hr />
+
+                <p class="text-muted small">Or continue without signing in — links will be anonymous and won't appear in a dashboard.</p>
+
+                <div class="mt-3">
+                    <a class="btn btn-link" asp-controller="Home" asp-action="Index">Return to Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
