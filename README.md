@@ -58,33 +58,33 @@ This structure ensures clarity, separation of concerns, and future scalability.
 This **URL** Shortener follows a scalable, cloud-ready architecture optimized for low latency and horizontal scaling.
 
 ```
-    ┌───────────────────────┐
-    │      Client/User      │
-    └─────────────┬─────────┘
-    │
-    ▼
-    ┌────────────────────────┐
-    │ Load Balancer / **API** GW │
-    └─────────────┬─────────┘
-    │
-    ┌────────────┴────────────┐
-    │       App Servers       │
-    │  (**ASP**.**NET** Core **MVC**)     │
-    └────────────┬────────────┘
-    │
-    ┌────────────────────────┼────────────────────────┐
-    │                        │                        │
-    ▼                        ▼                        ▼
- ┌──────────────┐        ┌────────────────┐       ┌─────────────────────┐
- │    Cache     │        │   Database     │       │   ID Generator       │
- │   (Redis)    │        │ (PostgreSQL)   │       │ (Counter / Random)   │
- └──────────────┘        └────────────────┘       └─────────────────────┘
-    │
-    ▼
-    ┌─────────────────────────────┐
-    │     Background Workers       │
-    │  (Cleanup, Analytics, Jobs)  │
-    └─────────────────────────────┘
+                                ┌───────────────────────┐
+                                │      Client/User      │
+                                └─────────────┬─────────┘
+                                              │
+                                              ▼
+                                ┌────────────────────────────┐
+                                │ Load Balancer / **API** GW │
+                                └────────────┬───────────────┘
+                                             │
+                                ┌────────────┴───────────────────┐
+                                │       App Servers              │
+                                │  (**ASP**.**NET** Core **MVC**)│
+                                └────────────┬───────────────────┘
+                                             │
+                    ┌────────────────────────┼────────────────────────┐
+                    │                        │                        │
+                    ▼                        ▼                        ▼
+            ┌──────────────┐        ┌────────────────┐       ┌─────────────────────┐
+            │    Cache     │        │   Database     │       │   ID Generator      │
+            │   (Redis)    │        │ (PostgreSQL)   │       │ (Counter / Random)  │
+            └──────────────┘        └────────────────┘       └─────────────────────┘
+                    │
+                    ▼
+        ┌─────────────────────────────┐
+        │     Background Workers      │
+        │  (Cleanup, Analytics, Jobs) │
+        └─────────────────────────────┘
 ```
 
 ---
@@ -149,64 +149,64 @@ Create this file as `appsettings.example.json` and instruct users to copy it to 
 
 ```json
 {
-    *AppSettings*: {
-    *BaseUrl*: *[https://your-app-base-url*](https://your-app-base-url*)
-    },
+  "AppSettings": {
+    "BaseUrl": "https://your-app-base-url"
+  },
 
-    *Logging*: {
-    *LogLevel*: {
-    *Default*: *Information*,
-    *Microsoft.AspNetCore*: *Warning*
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
     }
-    },
+  },
 
-    *ConnectionStrings*: {
-    *DefaultConnection*: *Server=YOUR_POSTGRES_SERVER;Database=YOUR_DB_NAME;Port=**5432**;User Id=YOUR_DB_USER;Password=YOUR_DB_PASSWORD;Ssl Mode=Require;*,
-    *Redis*: *YOUR_REDIS_HOST:**6380**,password=YOUR_REDIS_KEY,ssl=True,abortConnect=False*
-    },
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=YOUR_POSTGRES_SERVER;Database=YOUR_DB_NAME;Port=5432;User Id=YOUR_DB_USER;Password=YOUR_DB_PASSWORD;Ssl Mode=Require;",
+    "Redis": "YOUR_REDIS_HOST:6380,password=YOUR_REDIS_KEY,ssl=True,abortConnect=False"
+  },
 
-    *Authentication*: {
-    *Google*: {
-    *ClientId*: *YOUR_GOOGLE_CLIENT_ID*,
-    *ClientSecret*: *YOUR_GOOGLE_CLIENT_SECRET*
+  "Authentication": {
+    "Google": {
+      "ClientId": "YOUR_GOOGLE_CLIENT_ID",
+      "ClientSecret": "YOUR_GOOGLE_CLIENT_SECRET"
     },
-    *Microsoft*: {
-    *ClientId*: *YOUR_MICROSOFT_CLIENT_ID*,
-    *ClientSecret*: *YOUR_MICROSOFT_CLIENT_SECRET*
+    "Microsoft": {
+      "ClientId": "YOUR_MICROSOFT_CLIENT_ID",
+      "ClientSecret": "YOUR_MICROSOFT_CLIENT_SECRET"
     }
-    },
+  },
 
-    *Jwt*: {
-    *Issuer*: *UrlShortener*,
-    *Audience*: *UrlShortenerUsers*,
-    *Key*: *YOUR_SUPER_SECRET_KEY_MINIMUM_32_CHARACTERS*
-    },
+  "Jwt": {
+    "Issuer": "UrlShortener",
+    "Audience": "UrlShortenerUsers",
+    "Key": "YOUR_SUPER_SECRET_KEY_MINIMUM_32_CHARACTERS"
+  },
 
-  *AllowedHosts*: ***,
+  "AllowedHosts": "*",
 
-    *Serilog*: {
-    *Using*: [ *Serilog.Sinks.Console*, *Serilog.Sinks.PostgreSQL* ],
-    *MinimumLevel*: *Information*,
-    *WriteTo*: [
-    {
-    *Name*: *Console*
-    },
-    {
-    *Name*: *PostgreSQL*,
-    *Args*: {
-    *connectionString*: *Host=YOUR_POSTGRES_SERVER;Port=**5432**;Database=YOUR_DB_NAME;Username=YOUR_DB_USER;Password=YOUR_DB_PASSWORD;Ssl Mode=Require;Trust Server Certificate=true;*,
-    *tableName*: *Logs*,
-    *needAutoCreateTable*: true,
-    *columnOptions*: {
-    *additionalColumns*: [
-    { *ColumnName*: *UserId*, *DataType*: *text* },
-    { *ColumnName*: *RequestPath*, *DataType*: *text" }
+  "Serilog": {
+    "Using": [ "Serilog.Sinks.Console", "Serilog.Sinks.PostgreSQL" ],
+    "MinimumLevel": "Information",
+    "WriteTo": [
+      {
+        "Name": "Console"
+      },
+      {
+        "Name": "PostgreSQL",
+        "Args": {
+          "connectionString": "Host=YOUR_POSTGRES_SERVER;Port=5432;Database=YOUR_DB_NAME;Username=YOUR_DB_USER;Password=YOUR_DB_PASSWORD;Ssl Mode=Require;Trust Server Certificate=true;",
+          "tableName": "Logs",
+          "needAutoCreateTable": true,
+          "columnOptions": {
+            "additionalColumns": [
+              { "ColumnName": "UserId", "DataType": "text" },
+              { "ColumnName": "RequestPath", "DataType": "text" }
+            ]
+          }
+        }
+      }
     ]
-    }
-    }
-    }
-    ]
-    }
+  }
 }
 ```
 
