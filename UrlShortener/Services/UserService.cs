@@ -2,8 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Security.Claims;
+using UrlShortener.Application.Interfaces;
 using UrlShortener.Data;
-using UrlShortener.Services.Interfaces;
 
 namespace UrlShortener.Services
 {

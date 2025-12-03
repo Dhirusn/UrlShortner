@@ -14,6 +14,10 @@ namespace UrlShortener.Data
 
         public DbSet<UrlMapping> UrlMappings { get; set; }
         public DbSet<UrlClick> UrlClicks { get; set; }
+        public DbSet<PricingPlan> PricingPlans { get; set; }
+        public DbSet<PricingFeature> PricingFeatures { get; set; }
+        public DbSet<FeatureCategory> FeatureCategories { get; set; }
+        public DbSet<FAQ> FAQs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -47,6 +51,19 @@ namespace UrlShortener.Data
                 entity.HasIndex(c => c.ShortCode);
                 entity.HasIndex(c => c.ClickedAt);
             });
+
+            // Configure relationships
+            modelBuilder.Entity<PricingPlan>()
+                .HasMany(p => p.Features)
+                .WithOne()
+                .HasForeignKey("PricingPlanId")
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<FeatureCategory>()
+                .HasMany(fc => fc.Features)
+                .WithOne()
+                .HasForeignKey("FeatureCategoryId")
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

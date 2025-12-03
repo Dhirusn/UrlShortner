@@ -8,7 +8,6 @@ using UrlShortener.Data;
 using UrlShortener.Data.Models;
 using UrlShortener.Models;
 using UrlShortener.Models.ViewModels;
-using UrlShortener.Services.Interfaces;
 using System;
 using System.Linq;
 using System.Numerics;
@@ -16,6 +15,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using UrlShortener.Application.Interfaces;
 
 
 namespace UrlShortener.Services
@@ -28,6 +28,17 @@ namespace UrlShortener.Services
         private readonly AppSettings _settings;
         private static readonly char[] Base62Chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
         private static readonly RandomNumberGenerator _random = RandomNumberGenerator.Create();
+        private static readonly HttpClient _httpClient = new(new HttpClientHandler
+        {
+            AllowAutoRedirect = true,
+            AutomaticDecompression =
+            System.Net.DecompressionMethods.GZip |
+            System.Net.DecompressionMethods.Deflate |
+            System.Net.DecompressionMethods.Brotli
+        })
+        {
+            Timeout = TimeSpan.FromSeconds(6)
+        };
 
         public UrlShorteningService(ApplicationDbContext dbContext, IRedisCacheService cacheService, ILogger<UrlShorteningService> logger, IOptions<AppSettings> settings)
         {
@@ -36,8 +47,6 @@ namespace UrlShortener.Services
             _logger = logger;
             _settings = settings.Value;
         }
-
-
 
         private string ToBase62(byte[] bytes, int length)
         {
@@ -125,11 +134,6 @@ namespace UrlShortener.Services
 
             // If somehow longer, trim
             return sb.ToString(0, targetLength);
-        }
-
-        private char GetRandomChar()
-        {
-            return Base62Chars[GetRandomInt(0, Base62Chars.Length)];
         }
 
         public async Task<string> GenerateUniqueShortCodeAsync(string url, string customAlias = null)
@@ -459,23 +463,11 @@ namespace UrlShortener.Services
             }
         }
 
-        private bool IsValidUrl(string url)
+        private static bool IsValidUrl(string url)
         {
             return Uri.TryCreate(url, UriKind.Absolute, out var uriResult)
                 && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
         }
-
-        private static readonly HttpClient _httpClient = new HttpClient(new HttpClientHandler
-        {
-            AllowAutoRedirect = true,
-            AutomaticDecompression =
-             System.Net.DecompressionMethods.GZip |
-             System.Net.DecompressionMethods.Deflate |
-             System.Net.DecompressionMethods.Brotli
-        })
-        {
-            Timeout = TimeSpan.FromSeconds(6)
-        };
 
         public async Task<string> ExtractAnyPossibleTitleAsync(string url)
         {
@@ -559,13 +551,13 @@ namespace UrlShortener.Services
             return _settings.BaseUrl;
         }
 
-        private string GetCountryFromIp(string ipAddress)
+        private static string GetCountryFromIp(string ipAddress)
         {
             // Implement IP to country lookup (could use a service or local database)
             return "US"; // Placeholder
         }
 
-        private string GetDeviceType(string userAgent)
+        private static string GetDeviceType(string userAgent)
         {
             if (string.IsNullOrEmpty(userAgent))
                 return "unknown";

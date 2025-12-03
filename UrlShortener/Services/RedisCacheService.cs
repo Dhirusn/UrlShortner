@@ -1,6 +1,6 @@
 ﻿using StackExchange.Redis;
 using System.Text.Json;
-using UrlShortener.Services.Interfaces;
+using UrlShortener.Application.Interfaces;
 
 namespace UrlShortener.Services
 {

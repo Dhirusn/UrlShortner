@@ -6,10 +6,10 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Sinks.PostgreSQL;
 using StackExchange.Redis;
+using UrlShortener.Application.Interfaces;
 using UrlShortener.Data;
 using UrlShortener.Middlewares;
 using UrlShortener.Services;
-using UrlShortener.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -99,6 +99,7 @@ builder.Services.AddScoped<IUrlShorteningService, UrlShorteningService>();
 builder.Services.AddScoped<IRedisCacheService, RedisCacheService>();
 builder.Services.AddScoped<IOAuthService, OAuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IPricingService, PricingService>();
 
 // Add Health Checks
 builder.Services.AddHealthChecks()

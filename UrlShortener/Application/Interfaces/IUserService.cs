@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace UrlShortener.Services.Interfaces
+namespace UrlShortener.Application.Interfaces
 {
     public interface IUserService
     {

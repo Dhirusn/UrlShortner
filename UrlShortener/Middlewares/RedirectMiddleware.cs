@@ -1,5 +1,5 @@
 ﻿using System.Text.RegularExpressions;
-using UrlShortener.Services.Interfaces;
+using UrlShortener.Application.Interfaces;
 
 namespace UrlShortener.Middlewares
 {
@@ -96,6 +96,7 @@ namespace UrlShortener.Middlewares
                 path.StartsWith("auth/", StringComparison.OrdinalIgnoreCase) ||
                 path.StartsWith("dashboard/", StringComparison.OrdinalIgnoreCase) ||
                 path.StartsWith("url/", StringComparison.OrdinalIgnoreCase) ||
+                path.StartsWith("pricing/", StringComparison.OrdinalIgnoreCase) ||
                 path.Contains('.'))
                 return false;
 

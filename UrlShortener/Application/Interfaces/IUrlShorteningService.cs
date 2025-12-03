@@ -1,7 +1,7 @@
 ﻿using UrlShortener.Data.Models;
 using UrlShortener.Models.ViewModels;
 
-namespace UrlShortener.Services.Interfaces
+namespace UrlShortener.Application.Interfaces
 {
     public interface IUrlShorteningService
     {

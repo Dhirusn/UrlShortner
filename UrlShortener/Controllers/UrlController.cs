@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using UrlShortener.Application.Interfaces;
 using UrlShortener.Models.ViewModels;
-using UrlShortener.Services.Interfaces;
 
 namespace UrlShortener.Controllers
 {

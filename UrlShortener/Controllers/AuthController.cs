@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using UrlShortener.Application.Interfaces;
 using UrlShortener.Models.ViewModels;
 using UrlShortener.Services;
-using UrlShortener.Services.Interfaces;
 
 namespace UrlShortener.Controllers
 {
@@ -88,19 +88,30 @@ namespace UrlShortener.Controllers
         [HttpPost("/auth/login/local")]
         public async Task<IActionResult> LoginLocal(LoginViewModel model)
         {
-            if (!ModelState.IsValid) return View(model);
+            // If still null, set default
+            if (string.IsNullOrEmpty(model.ReturnUrl))
+            {
+                model.ReturnUrl = "/";
+            }
+            if (!ModelState.IsValid)
+            {
+                // Ensure ReturnUrl is preserved when returning the view
+                return View("Login", model);
+            }
 
             var user = await _userService.ValidateUserAsync(model.UserNameOrEmail, model.Password);
             if (user == null)
             {
                 ModelState.AddModelError("", "Invalid credentials.");
-                return View(model);
+                // Preserve ReturnUrl in the model
+                return View("Login", model);
             }
 
             var principal = _userService.CreatePrincipal(user);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
-            return LocalRedirect(model.ReturnUrl);
+            // Use LocalRedirect to prevent open redirect attacks
+            return LocalRedirect(model.ReturnUrl ?? "/");
         }
 
         [HttpGet("/auth/register")]
